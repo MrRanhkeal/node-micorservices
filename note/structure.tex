@@ -1,0 +1,42 @@
+root/
+│ docker-compose.yml
+│
+├── proxy/
+│   ├── nginx.conf
+│   └── Dockerfile
+│
+├── customers-service/
+│   ├── index.js
+│   ├── package.json
+│   ├── Dockerfile
+│   └── .env.dev
+│
+├── orders-service/
+│   ├── index.js
+│   ├── package.json
+│   ├── Dockerfile
+│   └── .env.dev
+│
+├── payment-service/
+│   ├── index.js
+│   ├── package.json
+│   ├── Dockerfile
+│   └── .env.dev
+│
+├── products-service/
+│   ├── index.js
+│   ├── package.json
+│   ├── Dockerfile
+│   └── .env.dev
+│
+└── gateway/
+    ├── index.js
+    ├── package.json
+    ├── Dockerfile
+    └── .env.dev
+__ shared/
+    ├── utils
+            ├── logger.js
+            |__ jwt.js
+    ├── idex.js.js
+    └── config.js

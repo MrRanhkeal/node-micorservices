@@ -1,0 +1,118 @@
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: root
+    ports:
+      - "3307:3306"   # External access: localhost:3307 ; Internal: mysql-db:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./logfiles/mysql:/var/log/mysql
+
+  
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8004:8004"
+    env_file:
+      - ./auth-services/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+  
+  customers-service:
+    build: ./customers-service
+    container_name: customers-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8004:8004"
+    env_file:
+      - ./customers-service/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+    # volumes:
+    #   - ./logfiles/customers:/var/log/app
+
+  orders-service:
+    build: ./orders-service
+    container_name: orders-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8005:8005"
+    env_file:
+      - ./orders-service/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306 
+    
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8006:8006"
+    env_file:
+      - ./payment-service/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306 
+  
+  products-service:
+    build: ./products-service
+    container_name: products-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8007:8007"
+    env_file:
+      - ./products-service/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306 
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    restart: always
+    depends_on:
+      - customers-service
+      - orders-service
+      - payment-service
+      - products-service
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./gateway/.env.dev
+    volumes:
+      - ./logfiles/gateway:/var/log/app
+
+  nginx-proxy:
+    build: ./proxy
+    container_name: nginx-proxy
+    restart: always
+    depends_on:
+      - gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./logfiles/nginx:/var/log/nginx
+
+volumes:
+  mysql_data:
