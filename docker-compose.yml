@@ -22,13 +22,26 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - "8004:8004"
+      - "8001:8001"
     env_file:
       - ./auth-services/.env.dev
     environment:
       DB_HOST: mysql-db
       DB_PORT: 3306
   
+  products-service:
+    build: ./products-service
+    container_name: products-service
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./products-service/.env.dev
+    environment:
+      DB_HOST: mysql-db
+      DB_PORT: 3306 
   customers-service:
     build: ./customers-service
     container_name: customers-service
@@ -36,7 +49,7 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - "8004:8004"
+      - "8003:8003"
     env_file:
       - ./customers-service/.env.dev
     environment:
@@ -52,7 +65,7 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - "8005:8005"
+      - "8004:8004"
     env_file:
       - ./orders-service/.env.dev
     environment:
@@ -66,23 +79,9 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - "8006:8006"
+      - "8005:8005"
     env_file:
       - ./payment-service/.env.dev
-    environment:
-      DB_HOST: mysql-db
-      DB_PORT: 3306 
-  
-  products-service:
-    build: ./products-service
-    container_name: products-service
-    restart: always
-    depends_on:
-      - mysql-db
-    ports:
-      - "8007:8007"
-    env_file:
-      - ./products-service/.env.dev
     environment:
       DB_HOST: mysql-db
       DB_PORT: 3306 
